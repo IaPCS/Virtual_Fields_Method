@@ -1,5 +1,4 @@
 import numpy as np
-import numpy.ma as ma
 from numpy import linalg
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -59,17 +58,51 @@ for i in range(0,len(x)):
         thetapart.append(angle)
     theta[i,:] = thetapart
     r[i,:] = rpart
-    
-reduced = ma.masked_where(r > Rad,r)
+
+r[r > Rad] = 0
+
+
+sigma1 = (-2.*P/(np.pi*t))*(np.divide(np.multiply((Rad-yMat),xMat**2),((xMat**2)+(Rad-yMat)**2)**2)+np.divide(np.multiply(Rad+yMat,xMat**2),(xMat**2+(Rad+yMat)**2)**2)-(1./(2.*Rad)))
+
+sigma2 = (-2.*P/(np.pi*t))* (np.divide((Rad-yMat)**3,((xMat**2)+(Rad-yMat)**2)**2) +  np.divide((Rad+yMat)**3,((xMat**2)+(Rad+yMat)**2)**2) - (1./(2.*Rad)))
+
+sigma6 = (2.*P/(np.pi*t)) * ( np.divide(np.multiply((Rad-yMat)**2,xMat),((xMat**2)+(Rad-yMat)**2)**2) - np.divide(np.multiply((Rad+yMat)**2,xMat),((xMat**2)+(Rad+yMat)**2)**2))
+
+epsilon1 = ((InputQ11/((InputQ11**2)-(InputQ12**2)))*sigma1) - ((InputQ12/((InputQ11**2)-(InputQ12**2)))*sigma2)
+
+epsilon2 = -(InputQ12/((InputQ11**2)-(InputQ12**2))*sigma1) + ((InputQ11/((InputQ11**2)-(InputQ12**2)))*sigma2)
+
+epsilon3 = (2./((InputQ11)-(InputQ12)))*sigma6
 
 
 
-sigma1 = (-2.*P/(np.pi*t))*(np.divide(np.multiply((Rad-yMat),xMat**2),((xMat**2)+(Rad-yMat)**2)**2)+np.divide(np.multiply(Rad+yMat,xMat**2),(xMat**2+(Rad+yMat)**2)**2))
+#print reduced.mask
 
-#print ((xMat**2)+(Rad-yMat)**2)**2
+r[r > 0] = 1
 
-print sigma1[0,0]
-#imagesc(xMat,yMat,reduced)
+A = np.zeros((2,2))
+
+A[0,0] = np.sum(np.multiply(epsilon2,r))
+A[1,1] = np.sum(np.multiply(epsilon2,r))
+A[0,1] = np.sum(np.multiply(epsilon1,r))
+A[1,0] = np.sum(np.multiply(epsilon1,r))
+
+B = np.zeros((2))
+
+B[0] = (-2.*P*Rad)/(t*SmallArea)
+B[1] = 0.
+
+x = np.linalg.solve(A,B)
+
+M = np.zeros((2))
+M[0] = InputQ11
+M[1] = InputQ12
+
+Qerror = np.divide(x,M)
+
+print Qerror
+
+#imagesc(xMat,yMat,r)
 #imagesc(xMat,yMat,theta)
 #imagesc(xMat,yMat,t)
 
