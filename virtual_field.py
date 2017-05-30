@@ -74,11 +74,9 @@ epsilon2 = -(InputQ12/((InputQ11**2)-(InputQ12**2))*sigma1) + ((InputQ11/((Input
 
 epsilon3 = (2./((InputQ11)-(InputQ12)))*sigma6
 
-
-
-#print reduced.mask
-
 r[r > 0] = 1
+
+#imagesc(xMat,yMat,r)
 
 A = np.zeros((2,2))
 
@@ -100,11 +98,13 @@ M[1] = InputQ12
 
 Qerror = np.divide(x,M)
 
-print Qerror
+EVFM = x[0] *(1.-(x[1]/x[0])**2)
+Eerror = (EVFM-E) / E
 
-#imagesc(xMat,yMat,r)
-#imagesc(xMat,yMat,theta)
-#imagesc(xMat,yMat,t)
+nuVFM = x[1] / x[0]
+nuError = (nuVFM-nu)/nu
+
+print Eerror , nuError
 
 
 
