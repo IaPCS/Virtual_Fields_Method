@@ -1,0 +1,8 @@
+Material:
+    E: 200000
+    nu: 0.29
+Geometry:
+    Radius: 50.
+    Thickness: 2.
+DIC:
+    Step: 10.
