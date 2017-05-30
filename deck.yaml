@@ -6,3 +6,4 @@ Geometry:
     Thickness: 2.
 DIC:
     Step: 10.
+    mmperpixel: 0.05
