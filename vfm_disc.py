@@ -27,7 +27,7 @@ Rad = 50. #mm
 t = 2. #mm
 
 # 2D-DIC parameter
-Step = 10.
+Step = 5.
 mmPerPix = 2*Rad/2000 # mm / pixel ratio
 SmallArea = (Step*mmPerPix)**2
 
@@ -62,7 +62,7 @@ r[r > 0] = 1
 imagesc(xMat,yMat,r)
 
 # Stresses in MPa
-sigma1 = (-2.*P/(np.pi*t))*(np.divide(np.multiply((Rad-yMat),xMat**2),((xMat**2)+(Rad-yMat)**2)**2)+np.divide(np.multiply(Rad+yMat,xMat**2),(xMat**2+(Rad+yMat)**2)**2)-(1./(2.*Rad)))
+sigma1 = 1. * (-2.*P/(np.pi*t))*(np.divide(np.multiply((Rad-yMat),xMat**2),((xMat**2)+(Rad-yMat)**2)**2)+np.divide(np.multiply(Rad+yMat,xMat**2),(xMat**2+(Rad+yMat)**2)**2)-(1./(2.*Rad)))
 
 sigma2 = (-2.*P/(np.pi*t))* (np.divide((Rad-yMat)**3,((xMat**2)+(Rad-yMat)**2)**2) +  np.divide((Rad+yMat)**3,((xMat**2)+(Rad+yMat)**2)**2) - (1./(2.*Rad)))
 
@@ -73,7 +73,7 @@ epsilon1 = ((InputQ11/((InputQ11**2)-(InputQ12**2)))*sigma1) - ((InputQ12/((Inpu
 
 epsilon2 = -(InputQ12/((InputQ11**2)-(InputQ12**2))*sigma1) + ((InputQ11/((InputQ11**2)-(InputQ12**2)))*sigma2)
 
-epsilon3 = (2./((InputQ11)-(InputQ12)))*sigma6
+epsilon6 = (2./((InputQ11)-(InputQ12)))*sigma6
 
 # VFM
 # For Virtual Field #1
@@ -104,22 +104,22 @@ InputQ = np.zeros((2))
 InputQ[0] = InputQ11
 InputQ[1] = InputQ12
 
-Qerror = np.divide(Q,InputQ) - 1.
-print "Result should be: Q = 1.0e+05 * [2.1900;0.6319]"
-print Q
+print "Result should be: Q11 =", InputQ[0] 
+print "Q11_vfm =", Q[0]
+print "Result should be: Q12 =", InputQ[1] 
+print "Q12_vfm =", Q[1]
 
-print "Result should be: Error for Q11 and Q12: 0.29% and -0.21%"
-print Qerror
+E_vfm = Q[0] *(1.-(Q[1]/Q[0])**2)
+E_error = (E_vfm-E) / E
+print "Result should be: E =", E 
+print "E_vfm =", E_vfm
+print "E_error_rel = ", E_error * 100.,"%"
 
-EVFM = Q[0] *(1.-(Q[1]/Q[0])**2)
-Eerror = (EVFM-E) / E
-print "Result should be: 0.38% error for E"
-print Eerror
-
-nuVFM = Q[1] / Q[0]
-nuError = (nuVFM-nu)/nu
-print "Result should be: -0.5% error for Nu"
-print nuError
+nu_vfm = Q[1] / Q[0]
+nu_error = (nu_vfm-nu)/nu
+print "Result should be: nu =", nu 
+print "nu_vfm =", nu_vfm
+print "nu_error_rel = ", nu_error * 100.,"%"
 
 
     
